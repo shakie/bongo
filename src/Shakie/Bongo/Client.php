@@ -23,7 +23,7 @@ class Client
      *
      * @var \MongoClient
      */
-    private $connection;
+    private static $connection;
 
     /**
      * Database pool
@@ -91,14 +91,14 @@ class Client
 
     public function getConnection()
     {
-        if (!$this->connection) {
+        if (!self::$connection) {
             if (!$this->dsn) {
                 throw new Exception('DSN not specified');
             }
-            $this->connection = new \MongoClient($this->dsn, $this->connectOptions);
+            self::$connection = new \MongoClient($this->dsn, $this->connectOptions);
         }
 
-        return $this->connection;
+        return self::$connection;
     }
 
     /**

@@ -93,8 +93,9 @@ class Model
     public function save()
     {
         // If the model has no collection. Aka: embeded model
-        if (!$this->collection)
+        if (!$this->collection) {
             return false;
+        }
 
         // If the "saving" event returns false we'll bail out of the save and return
         // false, indicating that the save failed. This gives an opportunities to
@@ -165,8 +166,9 @@ class Model
         // If the "deleting" event returns false we'll bail out of the delete and return
         // false, indicating that the delete failed. This gives an opportunities to
         // listeners to cancel delete operations if validations fail or whatever.
-        if ($this->fireModelEvent('deleting') === false)
+        if ($this->fireModelEvent('deleting') === false) {
             return false;
+        }
 
         $preparedAttr = $this->prepareMongoAttributes($this->attributes);
 
@@ -252,15 +254,17 @@ class Model
     {
         $instance = static::newInstance();
 
-        if (!$instance->collection)
+        if (!$instance->collection) {
             return false;
+        }
 
         // Get query array
         $query = $instance->prepareQuery($query);
 
         // If fields specified then prepare Mongo's projection
-        if (!empty($fields))
+        if (!empty($fields)) {
             $fields = $instance->prepareProjection($fields);
+        }
 
         if ($cachable) {
             // Perfodm Mongo's find and returns iterable cursor
@@ -297,8 +301,9 @@ class Model
      */
     public function parseDocument($doc)
     {
-        if (!is_array($doc))
+        if (!is_array($doc)) {
             return false;
+        }
 
         try {
             // For each attribute, feed the model object
@@ -386,17 +391,25 @@ class Model
     protected function db()
     {
         if (!static::$connection) {
-            $connector = new MongoDbConnector;
+            $connector = new Client();
             static::$connection = $connector->getConnection();
         }
 
-        return static::$connection->{$this->database};
+        try {
+            $database = $connector->getCurrentDatabaseName();
+        } catch (Exception $e) {
+            if (!$this->database) {
+                throw new Exception('Database not selected');
+            }
+            $database = $this->database;
+        }
+        return static::$connection->{$database};
     }
 
     /**
      * Returns the Mongo collection object
      *
-     * @return MongoDB collection
+     * @return \Shakie\Bongo\Collection
      */
     protected function collection()
     {
@@ -406,11 +419,11 @@ class Model
     /**
      * Returns the Mongo collection object
      *
-     * @return MongoDB collection
+     * @return \MongoCollection
      */
-    public function rawCollection()
+    public function getMongoCollection()
     {
-        return $this->collection();
+        return $this->collection()->getMongoCollection();
     }
 
     /**
@@ -527,21 +540,22 @@ class Model
      */
     protected function referencesOne($model, $field, $cachable = true)
     {
-        $referenced_id = $this->$field;
+        $referenced = $this->$field;
 
-        if (is_array($referenced_id) && count($referenced_id) == 1 && isset($referenced_id[0]))
-            $referenced_id = $referenced_id[0];
+        if (is_array($referenced) && count($referenced) == 1 && isset($referenced[0])) {
+            $referenced = $referenced[0];
+        }
 
         if ($cachable && static::$cacheComponent) {
             $cache_key = 'reference_cache_' . $model . '_' . $this->$field;
 
             // For the next 30 seconds (0.5 minutes), the last retrived value (for that Collection and ID)
             // will be returned from cache =)
-            return static::$cacheComponent->remember($cache_key, 0.5, function() use ($model, $field, $referenced_id) {
-                        return $model::first(array('_id' => $referenced_id));
-                    });
+            return static::$cacheComponent->remember($cache_key, 0.5, function() use ($model, $referenced) {
+                return $model::first(array('_id' => $referenced));
+            });
         } else {
-            return $model::first(array('_id' => $referenced_id));
+            return $model::first(array('_id' => $referenced));
         }
     }
 
@@ -550,29 +564,30 @@ class Model
      */
     protected function referencesMany($model, $field, $cachable = true)
     {
-        $ref_ids = $this->$field;
+        $refs = $this->$field;
 
-        if (!isset($ref_ids[0]))
+        if (!isset($refs[0])) {
             return array();
+        }
 
-        if ($this->isMongoId($ref_ids[0])) {
-            foreach ($ref_ids as $key => $value) {
-                $ref_ids[$key] = new \MongoId($value);
+        if ($this->isMongoId($refs[0])) {
+            foreach ($refs as $key => $value) {
+                $refs[$key] = new \MongoId($value);
             }
         }
 
         if ($cachable && static::$cacheComponent) {
-            $cache_key = 'reference_cache_' . $model . '_' . md5(serialize($ref_ids));
+            $cache_key = 'reference_cache_' . $model . '_' . md5(serialize($refs));
 
             // For the next 6 seconds (0.1 minute), the last retrived value
             // will be returned from cache =)
-            return static::$cacheComponent->remember($cache_key, 0.1, function() use ($model, $ref_ids) {
-                        return $model::where(array('_id' => array('$in' => $ref_ids)), array(), true);
+            return static::$cacheComponent->remember($cache_key, 0.1, function() use ($model, $refs) {
+                        return $model::where(array('_id' => array('$in' => $refs)), array(), true);
                     });
         } elseif ($cachable) {
-            return $model::where(array('_id' => array('$in' => $ref_ids)), array(), true);
+            return $model::where(array('_id' => array('$in' => $refs)), array(), true);
         } else {
-            return $model::where(array('_id' => array('$in' => $ref_ids)));
+            return $model::where(array('_id' => array('$in' => $refs)));
         }
     }
 
@@ -590,9 +605,9 @@ class Model
             } else {
                 $document = $field;
             }
-            $instance = new $model;
-            $instance->parseDocument($document);
-            $instance = $this->polymorph($instance);
+            $m = new $model();
+            $m->parseDocument($document);
+            $instance = $this->polymorph($m);
         }
 
         return $instance;
@@ -609,9 +624,9 @@ class Model
 
         if (is_array($this->$field)) {
             foreach ($this->$field as $document) {
-                $instance = new $model;
-                $instance->parseDocument($document);
-                $instance = $this->polymorph($instance);
+                $m = new $model;
+                $m->parseDocument($document);
+                $instance = $this->polymorph($m);
                 $documents[] = $instance;
             }
         }
@@ -726,7 +741,7 @@ class Model
      * Embed a new document to an attribute
      *
      * @param string $field
-     * @param mixed $target, document or part of the document. Ex: ['name'='Something']
+     * @param mixed $target Document or part of the document. Ex: ['name'='Something']
      * @return void
      */
     public function unembed($field, $target)
@@ -930,12 +945,14 @@ class Model
     public function update()
     {
         // If the model has no collection. Aka: embeded model
-        if (!$this->collection)
+        if (!$this->collection) {
             return false;
+        }
 
         // If the model has no _id.
-        if (!isset($this->attributes['_id']))
+        if (!isset($this->attributes['_id'])) {
             return false;
+        }
 
         // Prepare the created_at and updated_at attributes for the given model
         $this->prepareTimestamps();
