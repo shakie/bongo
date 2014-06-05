@@ -1,8 +1,10 @@
 <?php
-namespace Zizaco\Mongolid;
+
+namespace Shakie\Bongo;
 
 class OdmCursor implements \Iterator
 {
+
     /**
      * Model class that will be returned when iterate
      *
@@ -32,12 +34,10 @@ class OdmCursor implements \Iterator
      * @param $model string
      * @return void
      */
-    public function __construct( $cursor, $model )
+    public function __construct($cursor, $model)
     {
         $this->cursor = $cursor;
-
         $this->model = $model;
-
         $this->position = 0;
     }
 
@@ -51,20 +51,20 @@ class OdmCursor implements \Iterator
      */
     public function __call($name, $args)
     {
-        if( method_exists( $this->cursor, $name) ) {
+        if (method_exists($this->cursor, $name)) {
             // Calls the method in MongoCursor
-            $result = call_user_func_array( array($this->cursor, $name), $args);
+            $result = call_user_func_array(array($this->cursor, $name), $args);
 
             // In case of sort, limit and other methods of the cursor
             // that return itself (for chained method calls), should
             // return $this (OdmCursor object) instead of MongoCursor.
-            if(is_object($result) && get_class($result) == 'MongoCursor') {
+            if (is_object($result) && get_class($result) == 'MongoCursor') {
                 return $this;
             } else {
                 return $result;
             }
         } else {
-            trigger_error('Method '.$name.' does not exist in OdmCursor nor in MongoCursor.');
+            trigger_error('Method ' . $name . ' does not exist in OdmCursor nor in MongoCursor.');
         }
     }
 
@@ -97,11 +97,10 @@ class OdmCursor implements \Iterator
     function current()
     {
         $model = new $this->model();
-
         $document = $this->cursor->current();
 
-        if( $model->parseDocument( $document ) ) {
-            $model = $model->polymorph( $model );
+        if ($model->parseDocument($document)) {
+            $model = $model->polymorph($model);
             return $model;
         } else {
             return false;
@@ -113,12 +112,12 @@ class OdmCursor implements \Iterator
      *
      * @return array
      */
-    public function toArray( $documentsToArray = true, $limit = false )
+    public function toArray($documentsToArray = true, $limit = false)
     {
         $result = array();
 
-        foreach($this as $document) {
-            if( $documentsToArray ) {
+        foreach ($this as $document) {
+            if ($documentsToArray) {
                 $result[] = $document->getAttributes();
             } else {
                 $result[] = $document;
@@ -143,7 +142,8 @@ class OdmCursor implements \Iterator
      * Iterator key method (used in foreach)
      *
      */
-    function key() {
+    function key()
+    {
         return $this->position;
     }
 
@@ -151,7 +151,8 @@ class OdmCursor implements \Iterator
      * Iterator next method (used in foreach)
      *
      */
-    function next() {
+    function next()
+    {
         ++$this->position;
         $this->cursor->next();
     }
@@ -160,7 +161,8 @@ class OdmCursor implements \Iterator
      * Iterator valid method (used in foreach)
      *
      */
-    function valid() {
+    function valid()
+    {
         return $this->cursor->valid();
     }
 
@@ -168,14 +170,15 @@ class OdmCursor implements \Iterator
      * Iterator count method
      *
      */
-    function count() {
+    function count()
+    {
         return $this->cursor->count();
     }
 
-    function sort( $fields )
+    function sort($fields)
     {
-        if($this->count() > 1) {
-            $this->cursor->sort( $fields );
+        if ($this->count() > 1) {
+            $this->cursor->sort($fields);
         }
 
         return $this;
@@ -189,14 +192,13 @@ class OdmCursor implements \Iterator
     public function __toString()
     {
         $result = '';
-
         $this->limit(20);
 
-        foreach($this as $document) {
-            $result .= (string)$document;
+        foreach ($this as $document) {
+            $result .= (string) $document;
         }
 
-        $result = '['.$result.']';
+        $result = '[' . $result . ']';
 
         return $result;
     }
@@ -210,12 +212,13 @@ class OdmCursor implements \Iterator
     {
         $result = '';
 
-        foreach($this as $document) {
+        foreach ($this as $document) {
             $result .= $document->toJson($options);
         }
 
-        $result = '['.$result.']';
+        $result = '[' . $result . ']';
 
         return $result;
     }
+
 }
