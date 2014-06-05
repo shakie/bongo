@@ -316,7 +316,7 @@ class Model
 
             // Returns success
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Returns fail;
             return false;
         }
@@ -397,9 +397,9 @@ class Model
 
         try {
             $database = $connector->getCurrentDatabaseName();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (!$this->database) {
-                throw new Exception('Database not selected');
+                throw new \Exception('Database not selected');
             }
             $database = $this->database;
         }

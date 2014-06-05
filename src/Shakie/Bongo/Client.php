@@ -93,7 +93,7 @@ class Client
     {
         if (!self::$connection) {
             if (!$this->dsn) {
-                throw new Exception('DSN not specified');
+                throw new \Exception('DSN not specified');
             }
             self::$connection = new \MongoClient($this->dsn, $this->connectOptions);
         }
@@ -155,7 +155,7 @@ class Client
     public function getCurrentDatabaseName()
     {
         if (!$this->currentDatabaseName) {
-            throw new Exception('Database not selected');
+            throw new \Exception('Database not selected');
         }
 
         return $this->currentDatabaseName;
@@ -166,7 +166,7 @@ class Client
      * 
      * @param string $name
      * @return \Shakie\Bongo\Collection
-     * @throws Exception
+     * @throws \Exception
      */
     public function getCollection($name)
     {
@@ -231,7 +231,7 @@ class Client
     public function setWriteConcern($w, $timeout = 10000)
     {
         if (!$this->getConnection()->setWriteConcern($w, (int) $timeout)) {
-            throw new Exception('Error setting write concern');
+            throw new \Exception('Error setting write concern');
         }
 
         return $this;

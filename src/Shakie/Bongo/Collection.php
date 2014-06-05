@@ -91,7 +91,7 @@ class Collection implements \Countable
             // check if collection exists
             if ('ns not found' !== $status['errmsg']) {
                 // collection exist
-                throw new Exception('Error deleting collection ' . $this->getName());
+                throw new \Exception('Error deleting collection ' . $this->getName());
             }
         }
 
@@ -255,7 +255,7 @@ class Collection implements \Countable
      * 
      * @param \Shakie\Bongo\Document $document
      * @return \Shakie\Bongo\Collection
-     * @throws \Shakie\Bongo\Exception
+     * @throws \Exception
      * @throws \Shakie\Bongo\Document\Exception\Validate
      */
     public function saveDocument(Document $document, $validate = true)
@@ -275,7 +275,7 @@ class Collection implements \Countable
         $document->triggerEvent('afterDelete');
 
         if ($status['ok'] != 1) {
-            throw new Exception('Delete error: ' . $status['err']);
+            throw new \Exception('Delete error: ' . $status['err']);
         }
 
         // drop from document's pool
@@ -288,7 +288,7 @@ class Collection implements \Countable
     {
         $result = $this->mongoCollection->remove($expression->toArray());
         if (!$result) {
-            throw new Exception('Error removing documents from collection');
+            throw new \Exception('Error removing documents from collection');
         }
 
         return $this;
@@ -302,7 +302,7 @@ class Collection implements \Countable
             $document->fromArray($row);
 
             if (!$document->isValid()) {
-                throw new Exception('Document invalid');
+                throw new \Exception('Document invalid');
             }
 
             $document->reset();
@@ -310,7 +310,7 @@ class Collection implements \Countable
 
         $result = $this->mongoCollection->batchInsert($rows);
         if (!$result || $result['ok'] != 1) {
-            throw new Exception('Batch insert error: ' . $result['err']);
+            throw new \Exception('Batch insert error: ' . $result['err']);
         }
 
         return $this;
@@ -329,7 +329,7 @@ class Collection implements \Countable
         );
 
         if (1 != $status['ok']) {
-            throw new Exception('Multiple update error: ' . $status['err']);
+            throw new \Exception('Multiple update error: ' . $status['err']);
         }
 
         return $this;
@@ -350,7 +350,7 @@ class Collection implements \Countable
      * 
      * @param type $pipelines
      * @return array result of aggregation
-     * @throws Exception
+     * @throws \Exception
      */
     public function aggregate($pipelines)
     {
@@ -358,7 +358,7 @@ class Collection implements \Countable
         if ($pipelines instanceof AggregatePipelines) {
             $pipelines = $pipelines->toArray();
         } elseif (!is_array($pipelines)) {
-            throw new Exception('Wrong pipelines specified');
+            throw new \Exception('Wrong pipelines specified');
         }
 
         // log
@@ -371,7 +371,7 @@ class Collection implements \Countable
         $status = $this->mongoCollection->aggregate($pipelines);
 
         if ($status['ok'] != 1) {
-            throw new Exception($status['errmsg']);
+            throw new \Exception($status['errmsg']);
         }
 
         return $status['result'];
@@ -381,7 +381,7 @@ class Collection implements \Countable
     {
         $response = $this->mongoCollection->validate($full);
         if (!$response || $response['ok'] != 1) {
-            throw new Exception($response['errmsg']);
+            throw new \Exception($response['errmsg']);
         }
 
         return $response;
@@ -449,7 +449,7 @@ class Collection implements \Countable
     public function setWriteConcern($w, $timeout = 10000)
     {
         if (!$this->mongoCollection->setWriteConcern($w, (int) $timeout)) {
-            throw new Exception('Error setting write concern');
+            throw new \Exception('Error setting write concern');
         }
 
         return $this;

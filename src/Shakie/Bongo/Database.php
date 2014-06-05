@@ -126,7 +126,7 @@ class Database
     {
         $className = $this->getCollectionClassName($name);
         if (!class_exists($className)) {
-            throw new Exception('Class ' . $className . ' not found while map collection name to class');
+            throw new \Exception('Class ' . $className . ' not found while map collection name to class');
         }
 
         $mongoCollection = $this->getMongoDB()->createCollection($name, $options);
@@ -139,7 +139,7 @@ class Database
      * @param int $maxElements The maximum number of elements to store in the collection.
      * @param int $size Size in bytes.
      * @return \Shakie\Bongo\Collection
-     * @throws Exception
+     * @throws \Exception
      */
     public function createCappedCollection($name, $maxElements, $size)
     {
@@ -150,7 +150,7 @@ class Database
         );
 
         if (!$options['size'] && !$options['max']) {
-            throw new Exception('Size or number of elements must be defined');
+            throw new \Exception('Size or number of elements must be defined');
         }
 
         return $this->createCollection($name, $options);
@@ -166,7 +166,7 @@ class Database
         if (!isset($this->collectionPool[$name])) {
             $className = $this->getCollectionClassName($name);
             if (!class_exists($className)) {
-                throw new Exception('Class ' . $className . ' not found while map collection name to class');
+                throw new \Exception('Class ' . $className . ' not found while map collection name to class');
             }
 
             $this->collectionPool[$name] = new $className($this, $name);
@@ -222,7 +222,7 @@ class Database
     public function setWriteConcern($w, $timeout = 10000)
     {
         if (!$this->mongoDB->setWriteConcern($w, (int) $timeout)) {
-            throw new Exception('Error setting write concern');
+            throw new \Exception('Error setting write concern');
         }
 
         return $this;
