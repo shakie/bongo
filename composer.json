@@ -1,12 +1,16 @@
 {
-    "name": "shakie/bongo",
-    "description": "Easy, powerful and ultrafast ODM for PHP and MongoDB.",
+    "name": "poblcreative/bongo",
+    "description": "Easy, powerful and ultrafast ODM and ActiveRecord for PHP and MongoDB.",
     "keywords": ["odm","mongodb","nosql"],
     "license": "MIT",
     "authors": [
         {
             "name": "Zizaco Zizuini",
             "email": "zizaco@gmail.com"
+        },
+        {
+            "name": "Dmytro Sokil",
+            "email": "dmytro.sokil@gmail.com"
         },
         {
             "name": "Shaun Rowe",
@@ -21,11 +25,12 @@
     },
     "require-dev": {
         "mockery/mockery": "0.7.2",
-        "satooshi/php-coveralls": "dev-master"
+        "satooshi/php-coveralls": "dev-master",
+        "phpunit/phpunit": "4.3.*@dev"
     },
     "autoload": {
         "psr-0": {
-            "Shakie": "src/"
+            "Pobl": "src/"
         }
     },
     "minimum-stability": "dev"

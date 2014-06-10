@@ -1,6 +1,6 @@
 <?php
 
-namespace Shakie\Bongo;
+namespace Pobl\Bongo;
 
 class Client
 {
@@ -110,7 +110,7 @@ class Client
      * Class prefix:
      *  [dbname => classPrefix]
      * 
-     * @return \Shakie\Bongo\Client
+     * @return \Pobl\Bongo\Client
      */
     public function map(array $mapping)
     {
@@ -122,7 +122,7 @@ class Client
     /**
      * 
      * @param string $name database name
-     * @return \Shakie\Bongo\Database
+     * @return \Pobl\Bongo\Database
      */
     public function getDatabase($name = null)
     {
@@ -144,7 +144,7 @@ class Client
      * Select database
      * 
      * @param string $databaseName
-     * @return \Shakie\Bongo\Client
+     * @return \Pobl\Bongo\Client
      */
     public function useDatabase($name)
     {
@@ -165,7 +165,7 @@ class Client
      * Get collection from presiously seletced database by self::useDatabase()
      * 
      * @param string $name
-     * @return \Shakie\Bongo\Collection
+     * @return \Pobl\Bongo\Collection
      * @throws \Exception
      */
     public function getCollection($name)

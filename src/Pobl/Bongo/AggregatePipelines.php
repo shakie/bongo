@@ -1,8 +1,8 @@
 <?php
 
-namespace Shakie\Bongo;
+namespace Pobl\Bongo;
 
-use Shakie\Bongo\Collection;
+use Pobl\Bongo\Collection;
 
 class AggregatePipelines
 {
@@ -10,7 +10,7 @@ class AggregatePipelines
     private $_pipelines = array();
 
     /**
-     * @var \Shakie\Bongo\Collection
+     * @var \Pobl\Bongo\Collection
      */
     private $_collection;
 
