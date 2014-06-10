@@ -10,10 +10,10 @@ class Model
     /**
      * The connection name for the model.
      *
-     * @var MongoDB
+     * @var \Shakie\Bongo\Client
      */
     public static $connection;
-
+    
     /**
      * The collection associated with the model.
      *
@@ -126,7 +126,7 @@ class Model
 
         // Prepare the attributes of the model
         $preparedAttr = $this->prepareMongoAttributes($this->attributes);
-
+        
         // Saves the model using the MongoClient
         $result = $this->collection()
                 ->save($preparedAttr, array("w" => $this->writeConcern));
@@ -391,19 +391,21 @@ class Model
     protected function db()
     {
         if (!static::$connection) {
-            $connector = new Client();
-            static::$connection = $connector->getConnection();
+            //Create a connection with default values
+            $client = new Client('mongodb://localhost:27017');            
         }
+        $client = static::$connection;
 
         try {
-            $database = $connector->getCurrentDatabaseName();
+            $database = $client->getCurrentDatabaseName();
         } catch (\Exception $e) {
             if (!$this->database) {
                 throw new \Exception('Database not selected');
             }
             $database = $this->database;
         }
-        return static::$connection->{$database};
+        
+        return $client->{$database};
     }
 
     /**
@@ -426,6 +428,15 @@ class Model
         return $this->collection()->getMongoCollection();
     }
 
+    /**
+     * 
+     * @param \Shakie\Bongo\Client $client
+     */
+    public static function setDefaultConnection($client)
+    {
+        static::$connection = $client;
+    }
+    
     /**
      * Get an attribute from the model.
      *

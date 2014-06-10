@@ -336,6 +336,18 @@ class Collection implements \Countable
     }
 
     /**
+     * Save data to Mongo
+     * 
+     * @param array $data
+     * @param type $options
+     * @return array
+     */
+    public function save($data, $options)
+    {
+        return $this->mongoCollection->save($data, $options);
+    }
+
+    /**
      * Create Aggregator pipelines instance
      * 
      * @return \Shakie\Bongo\AggregatePipelines

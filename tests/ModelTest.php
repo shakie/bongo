@@ -39,6 +39,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
     {
         $prod = new _stubProduct;
         $prod->name = 'Something';
+        $prod->timestamps = false;
 
         $this->productsCollection
             ->shouldReceive('save')
@@ -74,6 +75,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
     {
         $prod = new _stubProduct;
         $prod->name = 'Something';
+        $prod->timestamps = true;
 
         $prod->prepareTimestamps();
 
