@@ -1,7 +1,7 @@
 <?php
 
-use Shakie\Bongo\Model;
-use Shakie\Bongo\OdmCursor;
+use Pobl\Bongo\Model;
+use Pobl\Bongo\OdmCursor;
 use Mockery as m;
 
 class OdmCursorTest extends PHPUnit_Framework_TestCase

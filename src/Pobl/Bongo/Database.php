@@ -1,13 +1,13 @@
 <?php
 
-namespace Shakie\Bongo;
+namespace Pobl\Bongo;
 
 class Database
 {
 
     /**
      *
-     * @var \Shakie\Bongo\Client
+     * @var \Pobl\Bongo\Client
      */
     private $client;
 
@@ -65,7 +65,7 @@ class Database
 
     /**
      * 
-     * @return \Shakie\Bongo\Client
+     * @return \Pobl\Bongo\Client
      */
     public function getClient()
     {
@@ -77,7 +77,7 @@ class Database
      * 
      * @param string|array $name collection name or array like [collectionName => collectionClass, ...]
      * @param string|null $class if $name is string, then full class name, else ommited
-     * @return \Shakie\Bongo\Client
+     * @return \Pobl\Bongo\Client
      */
     public function map($name, $class = null)
     {
@@ -110,7 +110,7 @@ class Database
         } elseif ($this->classPrefix) {
             $className = $this->classPrefix . '\\' . implode('\\', array_map('ucfirst', explode('.', strtolower($name))));
         } else {
-            $className = '\Shakie\Bongo\Collection';
+            $className = '\Pobl\Bongo\Collection';
         }
 
         return $className;
@@ -120,7 +120,7 @@ class Database
      * Create collection
      * 
      * @param array $options array of options
-     * @return \Shakie\Bongo\Collection
+     * @return \Pobl\Bongo\Collection
      */
     public function createCollection($name, array $options = null)
     {
@@ -138,7 +138,7 @@ class Database
      * @param string $name name of collection
      * @param int $maxElements The maximum number of elements to store in the collection.
      * @param int $size Size in bytes.
-     * @return \Shakie\Bongo\Collection
+     * @return \Pobl\Bongo\Collection
      * @throws \Exception
      */
     public function createCappedCollection($name, $maxElements, $size)
@@ -159,7 +159,7 @@ class Database
     /**
      * 
      * @param string $name name of collection
-     * @return \Shakie\Bongo\Collection
+     * @return \Pobl\Bongo\Collection
      */
     public function getCollection($name)
     {
@@ -178,7 +178,7 @@ class Database
     /**
      * 
      * @param string $channel name of channel
-     * @return \Shakie\Bongo\Queue
+     * @return \Pobl\Bongo\Queue
      */
     public function getQueue($channel)
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Shakie\Bongo;
+namespace Pobl\Bongo;
 
 class Collection implements \Countable
 {
@@ -9,17 +9,17 @@ class Collection implements \Countable
      *
      * @var string
      */
-    protected $queryBuliderClass = '\Shakie\Bongo\QueryBuilder';
+    protected $queryBuliderClass = '\Pobl\Bongo\QueryBuilder';
 
     /**
      *
      * @var string
      */
-    protected $queryExpressionClass = '\Shakie\Bongo\Expression';
+    protected $queryExpressionClass = '\Pobl\Bongo\Expression';
 
     /**
      *
-     * @var \Shakie\Bongo\Database
+     * @var \Pobl\Bongo\Database
      */
     private $database;
 
@@ -77,7 +77,7 @@ class Collection implements \Countable
 
     /**
      * 
-     * @return \Shakie\Bongo\Database
+     * @return \Pobl\Bongo\Database
      */
     public function getDatabase()
     {
@@ -106,13 +106,13 @@ class Collection implements \Countable
      */
     public function getDocumentClassName(array $documentData = null)
     {
-        return '\Shakie\Bongo\Model';
+        return '\Pobl\Bongo\Model';
     }
 
     /**
      * 
      * @param array $data
-     * @return \Shakie\Bongo\Document
+     * @return \Pobl\Bongo\Document
      */
     public function createDocument(array $data = null)
     {
@@ -131,7 +131,7 @@ class Collection implements \Countable
     /**
      * Create document query builder
      * 
-     * @return \Shakie\Bongo\QueryBuilder|\Shakie\Bongo\Expression
+     * @return \Pobl\Bongo\QueryBuilder|\Pobl\Bongo\Expression
      */
     public function find()
     {
@@ -144,7 +144,7 @@ class Collection implements \Countable
      * Retrieve a list of distinct values for the given key across a collection.
      * 
      * @param string $selector field selector
-     * @param \Shakie\Bongo\Expression $expression expression to search documents
+     * @param \Pobl\Bongo\Expression $expression expression to search documents
      * @return array distinct values
      */
     public function getDistinct($selector, Expression $expression = null)
@@ -158,7 +158,7 @@ class Collection implements \Countable
 
     /**
      * 
-     * @return \Shakie\Bongo\Expression
+     * @return \Pobl\Bongo\Expression
      */
     public function expression()
     {
@@ -167,7 +167,7 @@ class Collection implements \Countable
 
     /**
      * 
-     * @return \Shakie\Bongo\Operator
+     * @return \Pobl\Bongo\Operator
      */
     public function operator()
     {
@@ -177,7 +177,7 @@ class Collection implements \Countable
     /**
      * Create document query builder
      * 
-     * @return \Shakie\Bongo\QueryBuilder
+     * @return \Pobl\Bongo\QueryBuilder
      */
     public function findAsArray()
     {
@@ -203,7 +203,7 @@ class Collection implements \Countable
      * Get document by id
      * 
      * @param string|MongoId $id
-     * @return \Shakie\Bongo\Document|null
+     * @return \Pobl\Bongo\Document|null
      */
     public function getDocument($id)
     {
@@ -222,7 +222,7 @@ class Collection implements \Countable
      * Get document by id directly omiting cache
      * 
      * @param type $id
-     * @return \Shakie\Bongo\Document|null
+     * @return \Pobl\Bongo\Document|null
      */
     public function getDocumentDirectly($id)
     {
@@ -233,7 +233,7 @@ class Collection implements \Countable
      * Get document by id
      * 
      * @param string|MongoId $id
-     * @return \Shakie\Bongo\Document|null
+     * @return \Pobl\Bongo\Document|null
      */
     public function getDocuments(array $idList)
     {
@@ -253,10 +253,10 @@ class Collection implements \Countable
 
     /**
      * 
-     * @param \Shakie\Bongo\Document $document
-     * @return \Shakie\Bongo\Collection
+     * @param \Pobl\Bongo\Document $document
+     * @return \Pobl\Bongo\Collection
      * @throws \Exception
-     * @throws \Shakie\Bongo\Document\Exception\Validate
+     * @throws \Pobl\Bongo\Document\Exception\Validate
      */
     public function saveDocument(Document $document, $validate = true)
     {
@@ -350,7 +350,7 @@ class Collection implements \Countable
     /**
      * Create Aggregator pipelines instance
      * 
-     * @return \Shakie\Bongo\AggregatePipelines
+     * @return \Pobl\Bongo\AggregatePipelines
      */
     public function createPipeline()
     {

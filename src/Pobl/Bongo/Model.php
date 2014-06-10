@@ -1,6 +1,6 @@
 <?php
 
-namespace Shakie\Bongo;
+namespace Pobl\Bongo;
 
 use \MongoDate;
 
@@ -10,7 +10,7 @@ class Model
     /**
      * The connection name for the model.
      *
-     * @var \Shakie\Bongo\Client
+     * @var \Pobl\Bongo\Client
      */
     public static $connection;
     
@@ -193,7 +193,7 @@ class Model
      *
      * @param  mixed  $id
      * @param  array  $fields
-     * @return Shakie\Bongo\Model
+     * @return Pobl\Bongo\Model
      */
     public static function first($id = array(), $fields = array())
     {
@@ -248,7 +248,7 @@ class Model
      * @param  array  $query
      * @param  array  $fields
      * @param  boolean  $cachable
-     * @return Shakie\Bongo\OdmCursor
+     * @return Pobl\Bongo\OdmCursor
      */
     public static function where($query = array(), $fields = array(), $cachable = false)
     {
@@ -285,7 +285,7 @@ class Model
      * Find "all" documents from the collection
      *
      * @param  array  $fields
-     * @return Shakie\Bongo\OdmCursor
+     * @return Pobl\Bongo\OdmCursor
      */
     public static function all($fields = array())
     {
@@ -411,7 +411,7 @@ class Model
     /**
      * Returns the Mongo collection object
      *
-     * @return \Shakie\Bongo\Collection
+     * @return \Pobl\Bongo\Collection
      */
     protected function collection()
     {
@@ -430,7 +430,7 @@ class Model
 
     /**
      * 
-     * @param \Shakie\Bongo\Client $client
+     * @param \Pobl\Bongo\Client $client
      */
     public static function setDefaultConnection($client)
     {
@@ -654,7 +654,7 @@ class Model
      */
     public function attach($field, $obj)
     {
-        if (is_a($obj, 'Shakie\Bongo\Model')) {
+        if (is_a($obj, 'Pobl\Bongo\Model')) {
             $mongoId = $obj->getMongoId();
         } elseif (is_array($obj)) {
             if (isset($obj['id'])) {
@@ -682,7 +682,7 @@ class Model
      */
     public function detach($field, $obj)
     {
-        if (is_a($obj, 'Shakie\Bongo\Model')) {
+        if (is_a($obj, 'Pobl\Bongo\Model')) {
             $mongoId = $obj->getMongoId();
         } elseif (is_array($obj)) {
             if (isset($obj['id'])) {
@@ -716,7 +716,7 @@ class Model
      */
     public function embed($field, &$obj)
     {
-        if (is_a($obj, 'Shakie\Bongo\Model')) {
+        if (is_a($obj, 'Pobl\Bongo\Model')) {
             $document = $obj->toArray();
         } else {
             $document = $obj;
@@ -737,7 +737,7 @@ class Model
                 $generatedId = new \MongoId;
                 $document['_id'] = $generatedId;
 
-                if (is_a($obj, 'Shakie\Bongo\Model')) {
+                if (is_a($obj, 'Pobl\Bongo\Model')) {
                     $obj->_id = $generatedId;
                 }
             }
@@ -757,7 +757,7 @@ class Model
      */
     public function unembed($field, $target)
     {
-        if (is_a($target, 'Shakie\Bongo\Model')) {
+        if (is_a($target, 'Pobl\Bongo\Model')) {
             $target = $target->toArray();
         } elseif (!is_array($target)) {
             $target = array('_id' => $target);

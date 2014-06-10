@@ -1,6 +1,6 @@
 <?php
 
-namespace Shakie\Bongo;
+namespace Pobl\Bongo;
 
 class OdmCursor implements \Iterator
 {

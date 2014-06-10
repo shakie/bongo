@@ -1,8 +1,8 @@
 <?php
 
-use Shakie\Bongo\Model;
-use Shakie\Bongo\OdmCursor;
-use Shakie\Bongo\CachableOdmCursor;
+use Pobl\Bongo\Model;
+use Pobl\Bongo\OdmCursor;
+use Pobl\Bongo\CachableOdmCursor;
 use Mockery as m;
 
 class CachableOdmCursorTest extends PHPUnit_Framework_TestCase

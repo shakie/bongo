@@ -1,6 +1,6 @@
 <?php
 
-use Shakie\Bongo\Model;
+use Pobl\Bongo\Model;
 use Mockery as m;
 
 class ModelTest extends PHPUnit_Framework_TestCase
@@ -207,7 +207,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
             ->andReturn($this->cursor);
 
         $result = _stubProduct::where($query, $fields, true);
-        $this->assertInstanceOf('Shakie\Bongo\CachableOdmCursor', $result);
+        $this->assertInstanceOf('Pobl\Bongo\CachableOdmCursor', $result);
     }
 
     public function testShouldWhere()
@@ -233,7 +233,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
             );
 
         $result = _stubProduct::where($query, $fields);
-        $this->assertInstanceOf('Shakie\Bongo\OdmCursor', $result);
+        $this->assertInstanceOf('Pobl\Bongo\OdmCursor', $result);
     }
 
     public function testShouldParseDocument()
@@ -440,7 +440,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
             );
 
         $result = $cat->products();
-        $this->assertInstanceOf('Shakie\Bongo\OdmCursor', $result);
+        $this->assertInstanceOf('Pobl\Bongo\OdmCursor', $result);
 
         $this->cursor
             ->shouldReceive('rewind')
@@ -448,7 +448,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
             ->andReturn($this->cursor);
 
         $result = $cat->products(true);
-        $this->assertInstanceOf('Shakie\Bongo\CachableOdmCursor', $result);
+        $this->assertInstanceOf('Pobl\Bongo\CachableOdmCursor', $result);
     }
 
     public function testShouldEmbedOne()
