@@ -1,7 +1,7 @@
 <?php
 
 use Pobl\Bongo\Model;
-use Mockery as m;
+use Mockery;
 
 class ModelTest extends PHPUnit_Framework_TestCase
 {
@@ -12,10 +12,10 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->mongoMock            = m::mock('Connection');
-        $this->productsCollection   = m::mock('Collection');
-        $this->categoriesCollection = m::mock('Collection');
-        $this->cursor               = m::mock(new _stubCursor);
+        $this->mongoMock            = Mockery::mock('Connection');
+        $this->productsCollection   = Mockery::mock('Collection');
+        $this->categoriesCollection = Mockery::mock('Collection');
+        $this->cursor               = Mockery::mock(new _stubCursor);
 
         $this->mongoMock->mongolid        = $this->mongoMock;
         $this->mongoMock->test_products   = $this->productsCollection;
@@ -28,7 +28,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        m::close();
+        Mockery::close();
 
         _stubProduct::$connection          = null;
         _stubProductPersisted::$connection = null;
