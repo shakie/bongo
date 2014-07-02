@@ -2,6 +2,9 @@
 
 namespace Pobl\Bongo;
 
+use Query;
+use Expression;
+
 class Collection implements \Countable
 {
 
@@ -9,7 +12,7 @@ class Collection implements \Countable
      *
      * @var string
      */
-    protected $queryBuliderClass = '\Pobl\Bongo\QueryBuilder';
+    protected $queryBuilderClass = '\Pobl\Bongo\Query';
 
     /**
      *
@@ -59,7 +62,7 @@ class Collection implements \Countable
 
     /**
      * Get name of collection
-     * @return string name of collection
+     * @return string Name of collection
      */
     public function getName()
     {
@@ -131,11 +134,11 @@ class Collection implements \Countable
     /**
      * Create document query builder
      * 
-     * @return \Pobl\Bongo\QueryBuilder|\Pobl\Bongo\Expression
+     * @return \Pobl\Bongo\Query|\Pobl\Bongo\Expression
      */
-    public function find()
+    public function find($class)
     {
-        return new $this->_queryBuliderClass($this, array(
+        return new $this->queryBuilderClass($this, $class, array(
             'expressionClass' => $this->queryExpressionClass,
         ));
     }
@@ -172,19 +175,6 @@ class Collection implements \Countable
     public function operator()
     {
         return new Operator;
-    }
-
-    /**
-     * Create document query builder
-     * 
-     * @return \Pobl\Bongo\QueryBuilder
-     */
-    public function findAsArray()
-    {
-        return new $this->_queryBuliderClass($this, array(
-            'expressionClass' => $this->queryExpressionClass,
-            'arrayResult' => true
-        ));
     }
 
     public function disableDocumentPool()

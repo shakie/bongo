@@ -9,8 +9,6 @@ class OdmCursorTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->mongoMock = m::mock('Connection');
-        //$this->productsCollection = m::mock('Collection');
-        //$this->categoriesCollection = m::mock('Collection');
         $this->mongoCursor = m::mock(new _stubMongoCursor);
 
         _stubModel::$connection = $this->mongoMock;

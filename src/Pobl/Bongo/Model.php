@@ -3,6 +3,7 @@
 namespace Pobl\Bongo;
 
 use \MongoDate;
+use Query;
 
 class Model
 {
@@ -243,6 +244,19 @@ class Model
     }
 
     /**
+     * 
+     * @return \Pobl\Bongo\Query|boolean
+     */
+    public static function query()
+    {
+        $instance = static::newInstance();
+        if (!$instance->collection) {
+            return false;
+        }
+        return $instance->collection()->find(get_called_class($instance));
+    }
+
+    /**
      * Find documents from the collection within the query
      *
      * @param  array  $query
@@ -250,7 +264,7 @@ class Model
      * @param  boolean  $cachable
      * @return Pobl\Bongo\OdmCursor
      */
-    public static function where($query = array(), $fields = array(), $cachable = false)
+    public static function where($where = array(), $fields = array(), $cachable = false)
     {
         $instance = static::newInstance();
 
@@ -258,24 +272,34 @@ class Model
             return false;
         }
 
-        // Get query array
-        $query = $instance->prepareQuery($query);
+        $query = null;
+        if (is_array($where)) {
+            $parts = $instance->prepareQuery($where);
+            $query = static::query();            
+            foreach ($parts as $key => $value) {
+                $query->where($key, $value);
+            }
+        } else if ($where instanceof Query) {
+            /* @var $query \Pobl\Bongo\Query */
+            $query = $where;
+        }
+        
+        if (!$query) {
+            return false;
+        }
 
         // If fields specified then prepare Mongo's projection
         if (!empty($fields)) {
             $fields = $instance->prepareProjection($fields);
         }
+        $query->fields($fields);
 
         if ($cachable) {
-            // Perfodm Mongo's find and returns iterable cursor
-            $cursor = new CachableOdmCursor(
-                    $query, get_class($instance)
-            );
+            // Get the cursor from the query
+            $cursor = new CachableOdmCursor($query->getExpression(), get_class($instance));
         } else {
-            // Perfodm Mongo's find and returns iterable cursor
-            $cursor = new OdmCursor(
-                    $instance->collection()->find($query, $fields), get_class($instance)
-            );
+            // Get the cursor from the query
+            $cursor = new OdmCursor($query->getCursor(), get_class($instance));
         }
 
         return $cursor;

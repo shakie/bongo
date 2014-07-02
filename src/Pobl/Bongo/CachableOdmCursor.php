@@ -2,13 +2,15 @@
 
 namespace Pobl\Bongo;
 
+use Expression;
+
 class CachableOdmCursor implements \Iterator
 {
 
     /**
      * The Query that generated this cursor
      *
-     * @var array
+     * @var \Pobl\Bongo\Expression
      */
     protected $query;
 
@@ -27,7 +29,7 @@ class CachableOdmCursor implements \Iterator
      * @param $model string
      * @return void
      */
-    public function __construct($query, $model)
+    public function __construct(Expression $query, $model)
     {
         $this->query = $query;
 
@@ -59,9 +61,10 @@ class CachableOdmCursor implements \Iterator
      */
     public function getOdmCursor()
     {
+        /* @var $model \Pobl\Bongo\Model */
         $model = $this->model;
 
-        $OdmCursor = $model::where($this->query);
+        $OdmCursor = $model::where($model::query()->query($this->query));
 
         if ($this->position > 0) {
             $OdmCursor->skip($this->position);
