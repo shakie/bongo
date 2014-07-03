@@ -249,7 +249,6 @@ class Query implements \Iterator, \Countable
             ->getMongoCollection()
             ->find($this->expression->toArray(), $this->fields);
         
-        
         if($this->skip) {
             $this->cursor->skip($this->skip);
         }

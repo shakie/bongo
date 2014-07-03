@@ -253,7 +253,7 @@ class Model
         if (!$instance->collection) {
             return false;
         }
-        return $instance->collection()->find(get_called_class($instance));
+        return $instance->collection()->getQueryBuilder(get_class($instance));
     }
 
     /**

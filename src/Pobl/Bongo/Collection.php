@@ -128,7 +128,7 @@ class Collection implements \Countable
 
     public function count()
     {
-        return $this->find()->count();
+        return $this->getQueryBuilder()->count();
     }
 
     /**
@@ -136,7 +136,7 @@ class Collection implements \Countable
      * 
      * @return \Pobl\Bongo\Query|\Pobl\Bongo\Expression
      */
-    public function find($class)
+    public function getQueryBuilder($class)
     {
         return new $this->queryBuilderClass($this, $class, array(
             'expressionClass' => $this->queryExpressionClass,
@@ -165,7 +165,7 @@ class Collection implements \Countable
      */
     public function expression()
     {
-        return new $this->_queryExpressionClass;
+        return new $this->queryExpressionClass;
     }
 
     /**
@@ -216,7 +216,7 @@ class Collection implements \Countable
      */
     public function getDocumentDirectly($id)
     {
-        return $this->find()->byId($id)->findOne();
+        return $this->getQueryBuilder()->byId($id)->findOne();
     }
 
     /**
@@ -227,7 +227,7 @@ class Collection implements \Countable
      */
     public function getDocuments(array $idList)
     {
-        $documents = $this->find()->byIdList($idList)->findAll();
+        $documents = $this->getQueryBuilder()->byIdList($idList)->findAll();
         if (!$documents) {
             return array();
         }

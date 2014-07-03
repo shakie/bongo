@@ -102,24 +102,6 @@ class Client
     }
 
     /**
-     * Map database and collection name to class
-     * 
-     * @param array $name classpath or class prefix
-     * Classpath:
-     *  [dbname => [collectionName => collectionClass, ...], ...]
-     * Class prefix:
-     *  [dbname => classPrefix]
-     * 
-     * @return \Pobl\Bongo\Client
-     */
-    public function map(array $mapping)
-    {
-        $this->mapping = $mapping;
-
-        return $this;
-    }
-
-    /**
      * 
      * @param string $name database name
      * @return \Pobl\Bongo\Database
@@ -132,9 +114,6 @@ class Client
 
         if (!isset($this->databasePool[$name])) {
             $this->databasePool[$name] = new Database($this, $name);
-            if (isset($this->mapping[$name])) {
-                $this->databasePool[$name]->map($this->mapping[$name]);
-            }
         }
 
         return $this->databasePool[$name];

@@ -26,7 +26,9 @@
     "require-dev": {
         "mockery/mockery": "0.7.2",
         "satooshi/php-coveralls": "dev-master",
-        "phpunit/phpunit": "4.3.*@dev"
+        "phpunit/phpunit": "4.3.*@dev",
+        "zizaco/mongolid": "dev-master",
+        "sokil/php-mongo": "dev-master"
     },
     "autoload": {
         "psr-0": {

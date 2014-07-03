@@ -1,7 +1,8 @@
 <?php
 
 use Pobl\Bongo\Model;
-use Mockery;
+use Pobl\Bongo\Expression;
+use Mockery as m;
 
 class ModelTest extends PHPUnit_Framework_TestCase
 {
@@ -9,18 +10,47 @@ class ModelTest extends PHPUnit_Framework_TestCase
     protected $productsCollection = null;
     protected $categoriesCollection = null;
     protected $cursor = null;
+    protected $testQuery;
+    protected $expression;
 
     public function setUp()
     {
-        $this->mongoMock            = Mockery::mock('Connection');
-        $this->productsCollection   = Mockery::mock('Collection');
-        $this->categoriesCollection = Mockery::mock('Collection');
-        $this->cursor               = Mockery::mock(new _stubCursor);
+        $this->mongoMock            = m::mock('Connection');
+        $this->productsCollection   = m::mock('Collection');
+        $this->categoriesCollection = m::mock('Collection');
+        $this->testQuery            = m::mock('Query');
+        $this->cursor               = m::mock(new _stubCursor);
+        $this->expression           = new Expression();
 
         $this->mongoMock->mongolid        = $this->mongoMock;
         $this->mongoMock->test_products   = $this->productsCollection;
         $this->mongoMock->test_categories = $this->categoriesCollection;
 
+        $this->testQuery
+                ->shouldReceive('query')
+                ->andReturn(array());
+        
+        $this->testQuery
+                ->shouldReceive('where')
+                ->withAnyArgs();
+        
+        $this->testQuery
+                ->shouldReceive('fields')
+                ->withAnyArgs();
+        
+        $this->testQuery
+                ->shouldReceive('getCursor')
+                ->andReturn($this->cursor);
+        
+        $this->testQuery
+                ->shouldReceive('getExpression')
+                ->andReturn($this->expression);
+        
+        $this->productsCollection
+                ->shouldReceive('getQueryBuilder')
+                ->with('_stubProduct')
+                ->andReturn($this->testQuery);
+        
         _stubProduct::$connection          = $this->mongoMock;
         _stubProductPersisted::$connection = $this->mongoMock;
         _stubCategory::$connection         = $this->mongoMock;
@@ -28,7 +58,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        Mockery::close();
+        m::close();
 
         _stubProduct::$connection          = null;
         _stubProductPersisted::$connection = null;
@@ -151,15 +181,15 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
         $fields = ['name','price'];
 
-        $this->productsCollection
+        /*$this->productsCollection
             ->shouldReceive('find')
             ->with(
-                $query ,['name'=>1,'price'=>1]
+                $query, ['name'=>1,'price'=>1]
             )
             ->once()
             ->andReturn(
                 $this->cursor
-            );
+            );*/
 
         $this->cursor
             ->shouldReceive('count')
@@ -181,25 +211,18 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
     public function testShouldWhereAsCachable()
     {
-        $existentProduct = [
-            '_id'=>new MongoId,
-            'name'=>'Bacon',
-            'price'=>10.50,
-        ];
-
         $query = ['name'=>'Bacon'];
-
         $fields = ['name','price'];
 
-        $this->productsCollection
+        /*$this->productsCollection
             ->shouldReceive('find')
             ->with(
-                $query , []
+                $query, []
             )
             ->once()
             ->andReturn(
                 $this->cursor
-            );
+            );*/
 
         $this->cursor
             ->shouldReceive('rewind')
@@ -222,7 +245,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
         $fields = ['name','price'];
 
-        $this->productsCollection
+        /*$this->productsCollection
             ->shouldReceive('find')
             ->with(
                 $query ,['name'=>1,'price'=>1]
@@ -230,7 +253,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
             ->once()
             ->andReturn(
                 $this->cursor
-            );
+            );*/
 
         $result = _stubProduct::where($query, $fields);
         $this->assertInstanceOf('Pobl\Bongo\OdmCursor', $result);
@@ -427,7 +450,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $cat->name = 'BaconCategory';
         $cat->products = [new MongoId('51e1eefc065f908c10000411'), new MongoId('51e1eefc065f908c10000412')];
 
-        $query = ['_id'=>['$in'=>$cat->products]];
+        /*$query = ['_id'=>['$in'=>$cat->products]];
 
         $this->productsCollection
             ->shouldReceive('find')
@@ -437,7 +460,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
             ->twice()
             ->andReturn(
                 $this->cursor
-            );
+            );*/
 
         $result = $cat->products();
         $this->assertInstanceOf('Pobl\Bongo\OdmCursor', $result);
@@ -447,8 +470,8 @@ class ModelTest extends PHPUnit_Framework_TestCase
             ->once()
             ->andReturn($this->cursor);
 
-        $result = $cat->products(true);
-        $this->assertInstanceOf('Pobl\Bongo\CachableOdmCursor', $result);
+        $result2 = $cat->products(true);
+        $this->assertInstanceOf('Pobl\Bongo\CachableOdmCursor', $result2);
     }
 
     public function testShouldEmbedOne()

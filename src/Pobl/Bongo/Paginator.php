@@ -4,17 +4,17 @@ namespace Pobl\Bongo;
 
 class Paginator implements \Iterator
 {
-    private $_currentPage = 1;
+    private $currentPage = 1;
     
-    private $_itemsOnPage = 30;
+    private $itemsOnPage = 30;
     
-    private $_totalRowsCount;
+    private $totalRowsCount;
     
     /**
      *
      * @var \Pobl\Bongo\Query
      */
-    private $_queryBuilder;
+    private $queryBuilder;
     
     public function __construct(QueryBuilder $queryBuilder = null)
     {
@@ -25,7 +25,7 @@ class Paginator implements \Iterator
     
     public function __destruct()
     {
-        $this->_queryBuilder = null;
+        $this->queryBuilder = null;
     }
     
     /**
@@ -35,12 +35,12 @@ class Paginator implements \Iterator
      */
     public function setItemsOnPage($itemsOnPage)
     {
-        $this->_itemsOnPage = (int) $itemsOnPage;
+        $this->itemsOnPage = (int) $itemsOnPage;
         
-        $this->_queryBuilder->limit($this->_itemsOnPage);
+        $this->queryBuilder->limit($this->itemsOnPage);
         
         // define offset
-        $this->_applyLimits();
+        $this->applyLimits();
         
         return $this;
     }
@@ -52,10 +52,10 @@ class Paginator implements \Iterator
      */
     public function setCurrentPage($currentPage)
     {        
-        $this->_currentPage = (int) $currentPage;
+        $this->currentPage = (int) $currentPage;
         
         // define offset
-        $this->_applyLimits();
+        $this->applyLimits();
         
         return $this;
     }
@@ -70,8 +70,8 @@ class Paginator implements \Iterator
             return 1;
         }
         
-        if($this->_currentPage <= $totalPageCount) {
-            $currentPage = $this->_currentPage;
+        if($this->currentPage <= $totalPageCount) {
+            $currentPage = $this->currentPage;
         } else {
             $currentPage = $totalPageCount;
         }
@@ -81,41 +81,41 @@ class Paginator implements \Iterator
     
     public function setQueryBuilder(QueryBuilder $queryBuilder)
     {
-        $this->_queryBuilder = clone $queryBuilder;
+        $this->queryBuilder = clone $queryBuilder;
         
-        $this->_applyLimits();
+        $this->applyLimits();
         
         return $this;
     }
     
     public function getTotalRowsCount()
     {
-        if($this->_totalRowsCount) {
-            return $this->_totalRowsCount;
+        if($this->totalRowsCount) {
+            return $this->totalRowsCount;
         }
         
-        $this->_totalRowsCount = $this->_queryBuilder->count();
+        $this->totalRowsCount = $this->queryBuilder->count();
         
-        return $this->_totalRowsCount;
+        return $this->totalRowsCount;
     }
     
     public function getTotalPagesCount()
     {
-        return (int) ceil($this->getTotalRowsCount() / $this->_itemsOnPage);
+        return (int) ceil($this->getTotalRowsCount() / $this->itemsOnPage);
     }
     
-    private function _applyLimits()
+    private function applyLimits()
     {
-        if(!$this->_queryBuilder) {
+        if(!$this->queryBuilder) {
             return;
         }
         
         $currentPage = $this->getCurrentPage();
         
         // get page of rows
-        $this->_queryBuilder
-            ->limit($this->_itemsOnPage)
-            ->skip(($currentPage - 1) * $this->_itemsOnPage);
+        $this->queryBuilder
+            ->limit($this->itemsOnPage)
+            ->skip(($currentPage - 1) * $this->itemsOnPage);
     }
     
     /**
@@ -123,28 +123,28 @@ class Paginator implements \Iterator
      */
     public function current()
     {
-        return $this->_queryBuilder->current();
+        return $this->queryBuilder->current();
     }
     
     public function key()
     {
-        return $this->_queryBuilder->key();
+        return $this->queryBuilder->key();
     }
     
     public function next()
     {
-        $this->_queryBuilder->next();
+        $this->queryBuilder->next();
         return $this;
     }
     
     public function rewind()
     {
-        $this->_queryBuilder->rewind();
+        $this->queryBuilder->rewind();
         return $this;
     }
     
     public function valid()
     {
-        return $this->_queryBuilder->valid();
+        return $this->queryBuilder->valid();
     }
 }
