@@ -1,13 +1,13 @@
 <?php
 
-namespace Pobl\Bongo;
+use \Pobl\Bongo\Client;
 
 class AggregatePipelinesTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
      *
-     * @var \Sokil\Mongo\Collection
+     * @var \Pobl\Bongo\Collection
      */
     private static $collection;
 
@@ -149,7 +149,7 @@ class AggregatePipelinesTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Sokil\Mongo\Exception
+     * @expectedException \Pobl\Bongo\Exception
      */
     public function testErrorOnEmptyIDInGroup()
     {

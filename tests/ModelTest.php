@@ -4,7 +4,7 @@ use Pobl\Bongo\Model;
 use Pobl\Bongo\Expression;
 use Mockery as m;
 
-class ModelTest extends PHPUnit_Framework_TestCase
+class ModelTest extends \PHPUnit_Framework_TestCase
 {
     protected $mongoMock = null;
     protected $productsCollection = null;

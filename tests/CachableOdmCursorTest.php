@@ -5,7 +5,7 @@ use Pobl\Bongo\Expression;
 use Pobl\Bongo\CachableOdmCursor;
 use Mockery as m;
 
-class CachableOdmCursorTest extends PHPUnit_Framework_TestCase
+class CachableOdmCursorTest extends \PHPUnit_Framework_TestCase
 {
 
     protected $mongoMock = null;
