@@ -43,7 +43,7 @@ class CachableOdmCursorTest extends \PHPUnit_Framework_TestCase
                 ->andReturn(array());
         
         $this->testCollection
-                ->shouldReceive('getQueryBuilder')
+                ->shouldReceive('getQuery')
                 ->with('_stubModelForCachable')
                 ->andReturn($this->testQuery);
 

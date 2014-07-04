@@ -24,6 +24,10 @@ class Query implements \Iterator, \Countable
      */
     private $modelClass;
     
+    /**
+     *
+     * @var array
+     */
     private $fields = array();
     
     /**
@@ -32,6 +36,10 @@ class Query implements \Iterator, \Countable
      */
     private $cursor;
     
+    /**
+     *
+     * @var int
+     */
     private $skip = 0;
     
     /**
@@ -40,10 +48,22 @@ class Query implements \Iterator, \Countable
      */
     private $expression;
     
+    /**
+     *
+     * @var int
+     */
     private $limit = 0;
     
+    /**
+     *
+     * @var array
+     */
     private $sort = array();
     
+    /**
+     *
+     * @var array
+     */
     private $readPreferences = array();
     
     /**
@@ -305,36 +325,6 @@ class Query implements \Iterator, \Countable
             ->count($this->expression->toArray(), $this->limit, $this->skip);
     }
     
-    public function findOne()
-    {
-        $documentData = $this->collection
-            ->getMongoCollection()
-            ->findOne($this->expression->toArray(), $this->fields);
-        
-        if(!$documentData) {
-            return null;
-        }
-        
-        if($this->options['arrayResult']) {
-            return $documentData;
-        }
-        
-        $className = $this->collection->getDocumentClassName($documentData);
-        
-        return new $className($this->collection, $documentData, array(
-            'stored' => true
-        ));
-    }
-    
-    /**
-     * 
-     * @return array result of searching
-     */
-    public function findAll()
-    {
-        return iterator_to_array($this);
-    }
-    
     public function findAndRemove()
     {
         $mongoDocument = $this->collection->getMongoCollection()->findAndModify(
@@ -352,7 +342,7 @@ class Query implements \Iterator, \Countable
         }
         
         $documentClassName = $this->collection
-            ->getDocumentClassName($mongoDocument);
+            ->getModelClassName($mongoDocument);
         
         return new $documentClassName($this->collection, $mongoDocument, array(
             'stored' => true
@@ -377,22 +367,11 @@ class Query implements \Iterator, \Countable
         }
         
         $documentClassName = $this->collection
-            ->getDocumentClassName($mongoDocument);
+            ->getModelClassName($mongoDocument);
         
         return new $documentClassName($this->collection, $mongoDocument, array(
             'stored' => true
         ));
-    }
-    
-    public function map($handler)
-    {
-        $result = array();
-        
-        foreach($this as $id => $document) {
-            $result[$id] = $handler($document);
-        }
-        
-        return $result;
     }
     
     public function filter($handler)
@@ -452,19 +431,6 @@ class Query implements \Iterator, \Countable
     public function current()
     {
         return $this->getCursor()->current();
-        /*$documentData = $this->getCursor()->current();
-        if(!$documentData) {
-            return null;
-        }
-        
-        if($this->options['arrayResult']) {
-            return $documentData;
-        }
-        
-        $className = $this->collection->getDocumentClassName($documentData);
-        return new $className($this->collection, $documentData, array(
-            'stored' => true
-        ));*/
     }
     
     public function key()

@@ -14,7 +14,7 @@ class Model
      * @var \Pobl\Bongo\Client
      */
     public static $connection;
-    
+
     /**
      * The collection associated with the model.
      *
@@ -127,7 +127,7 @@ class Model
 
         // Prepare the attributes of the model
         $preparedAttr = $this->prepareMongoAttributes($this->attributes);
-        
+
         // Saves the model using the MongoClient
         $result = $this->collection()
                 ->save($preparedAttr, array("w" => $this->writeConcern));
@@ -200,15 +200,17 @@ class Model
     {
         $instance = static::newInstance();
 
-        if (!$instance->collection)
+        if (!$instance->collection) {
             return false;
+        }
 
         // Get query array
         $query = $instance->prepareQuery($id);
 
         // If fields specified then prepare Mongo's projection
-        if (!empty($fields))
+        if (!empty($fields)) {
             $fields = $instance->prepareProjection($fields);
+        }
 
         // Perfodm Mongo's findOne
         $document = $instance->collection()->findOne($query, $fields);
@@ -253,7 +255,7 @@ class Model
         if (!$instance->collection) {
             return false;
         }
-        return $instance->collection()->getQueryBuilder(get_class($instance));
+        return $instance->collection()->getQuery(get_class($instance));
     }
 
     /**
@@ -275,7 +277,7 @@ class Model
         $query = null;
         if (is_array($where)) {
             $parts = $instance->prepareQuery($where);
-            $query = static::query();            
+            $query = static::query();
             foreach ($parts as $key => $value) {
                 $query->where($key, $value);
             }
@@ -283,7 +285,7 @@ class Model
             /* @var $query \Pobl\Bongo\Query */
             $query = $where;
         }
-        
+
         if (!$query) {
             return false;
         }
@@ -416,7 +418,7 @@ class Model
     {
         if (!static::$connection) {
             //Create a connection with default values
-            $client = new Client('mongodb://localhost:27017');            
+            $client = new Client('mongodb://localhost:27017');
         }
         $client = static::$connection;
 
@@ -428,7 +430,7 @@ class Model
             }
             $database = $this->database;
         }
-        
+
         return $client->{$database};
     }
 
@@ -460,7 +462,7 @@ class Model
     {
         static::$connection = $client;
     }
-    
+
     /**
      * Get an attribute from the model.
      *
@@ -587,8 +589,8 @@ class Model
             // For the next 30 seconds (0.5 minutes), the last retrived value (for that Collection and ID)
             // will be returned from cache =)
             return static::$cacheComponent->remember($cache_key, 0.5, function() use ($model, $referenced) {
-                return $model::first(array('_id' => $referenced));
-            });
+                        return $model::first(array('_id' => $referenced));
+                    });
         } else {
             return $model::first(array('_id' => $referenced));
         }

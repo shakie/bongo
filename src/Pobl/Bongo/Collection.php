@@ -12,7 +12,7 @@ class Collection implements \Countable
      *
      * @var string
      */
-    protected $queryBuilderClass = '\Pobl\Bongo\Query';
+    protected $queryClass = '\Pobl\Bongo\Query';
 
     /**
      *
@@ -107,38 +107,24 @@ class Collection implements \Countable
      * @param array $documentData
      * @return string Document class data
      */
-    public function getDocumentClassName(array $documentData = null)
+    public function getModelClassName(array $documentData = null)
     {
         return '\Pobl\Bongo\Model';
     }
 
-    /**
-     * 
-     * @param array $data
-     * @return \Pobl\Bongo\Document
-     */
-    public function createDocument(array $data = null)
-    {
-        $className = $this->getDocumentClassName($data);
-
-        return new $className($this, $data, array(
-            'stored' => false,
-        ));
-    }
-
     public function count()
     {
-        return $this->getQueryBuilder()->count();
+        return $this->getQuery()->count();
     }
 
     /**
-     * Create document query builder
+     * Create document query
      * 
      * @return \Pobl\Bongo\Query|\Pobl\Bongo\Expression
      */
-    public function getQueryBuilder($class)
+    public function getQuery($class)
     {
-        return new $this->queryBuilderClass($this, $class, array(
+        return new $this->queryClass($this, $class, array(
             'expressionClass' => $this->queryExpressionClass,
         ));
     }
@@ -165,16 +151,7 @@ class Collection implements \Countable
      */
     public function expression()
     {
-        return new $this->queryExpressionClass;
-    }
-
-    /**
-     * 
-     * @return \Pobl\Bongo\Operator
-     */
-    public function operator()
-    {
-        return new Operator;
+        return new $this->queryExpressionClass();
     }
 
     public function disableDocumentPool()
@@ -216,7 +193,7 @@ class Collection implements \Countable
      */
     public function getDocumentDirectly($id)
     {
-        return $this->getQueryBuilder()->byId($id)->findOne();
+        return $this->getQuery()->byId($id)->findOne();
     }
 
     /**
@@ -227,7 +204,7 @@ class Collection implements \Countable
      */
     public function getDocuments(array $idList)
     {
-        $documents = $this->getQueryBuilder()->byIdList($idList)->findAll();
+        $documents = $this->getQuery()->byIdList($idList)->findAll();
         if (!$documents) {
             return array();
         }
@@ -239,19 +216,6 @@ class Collection implements \Countable
         }
 
         return $documents;
-    }
-
-    /**
-     * 
-     * @param \Pobl\Bongo\Document $document
-     * @return \Pobl\Bongo\Collection
-     * @throws \Exception
-     * @throws \Pobl\Bongo\Document\Exception\Validate
-     */
-    public function saveDocument(Document $document, $validate = true)
-    {
-        $document->save($validate);
-        return $this;
     }
 
     public function deleteDocument(Document $document)

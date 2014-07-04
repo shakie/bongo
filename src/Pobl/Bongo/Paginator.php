@@ -4,19 +4,31 @@ namespace Pobl\Bongo;
 
 class Paginator implements \Iterator
 {
+    /**
+     *
+     * @var int
+     */
     private $currentPage = 1;
     
+    /**
+     *
+     * @var int
+     */
     private $itemsOnPage = 30;
     
+    /**
+     *
+     * @var int
+     */
     private $totalRowsCount;
     
     /**
      *
      * @var \Pobl\Bongo\Query
      */
-    private $queryBuilder;
+    private $query;
     
-    public function __construct(QueryBuilder $queryBuilder = null)
+    public function __construct(Query $queryBuilder = null)
     {
         if($queryBuilder) {
             $this->setQueryBuilder($queryBuilder);
@@ -25,7 +37,7 @@ class Paginator implements \Iterator
     
     public function __destruct()
     {
-        $this->queryBuilder = null;
+        $this->query = null;
     }
     
     /**
@@ -36,8 +48,7 @@ class Paginator implements \Iterator
     public function setItemsOnPage($itemsOnPage)
     {
         $this->itemsOnPage = (int) $itemsOnPage;
-        
-        $this->queryBuilder->limit($this->itemsOnPage);
+        $this->query->limit($this->itemsOnPage);
         
         // define offset
         $this->applyLimits();
@@ -81,8 +92,7 @@ class Paginator implements \Iterator
     
     public function setQueryBuilder(QueryBuilder $queryBuilder)
     {
-        $this->queryBuilder = clone $queryBuilder;
-        
+        $this->query = clone $queryBuilder;
         $this->applyLimits();
         
         return $this;
@@ -94,7 +104,7 @@ class Paginator implements \Iterator
             return $this->totalRowsCount;
         }
         
-        $this->totalRowsCount = $this->queryBuilder->count();
+        $this->totalRowsCount = $this->query->count();
         
         return $this->totalRowsCount;
     }
@@ -106,45 +116,45 @@ class Paginator implements \Iterator
     
     private function applyLimits()
     {
-        if(!$this->queryBuilder) {
+        if(!$this->query) {
             return;
         }
         
         $currentPage = $this->getCurrentPage();
         
         // get page of rows
-        $this->queryBuilder
+        $this->query
             ->limit($this->itemsOnPage)
             ->skip(($currentPage - 1) * $this->itemsOnPage);
     }
     
     /**
-     * @return \Pobl\Bongo\Document
+     * @return \Pobl\Bongo\Model
      */
     public function current()
     {
-        return $this->queryBuilder->current();
+        return $this->query->current();
     }
     
     public function key()
     {
-        return $this->queryBuilder->key();
+        return $this->query->key();
     }
     
     public function next()
     {
-        $this->queryBuilder->next();
+        $this->query->next();
         return $this;
     }
     
     public function rewind()
     {
-        $this->queryBuilder->rewind();
+        $this->query->rewind();
         return $this;
     }
     
     public function valid()
     {
-        return $this->queryBuilder->valid();
+        return $this->query->valid();
     }
 }

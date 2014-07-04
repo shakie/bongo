@@ -47,7 +47,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                 ->andReturn($this->expression);
         
         $this->productsCollection
-                ->shouldReceive('getQueryBuilder')
+                ->shouldReceive('getQuery')
                 ->with('_stubProduct')
                 ->andReturn($this->testQuery);
         
