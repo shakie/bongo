@@ -317,6 +317,17 @@ class Model
     {
         return static::where(array(), $fields);
     }
+    
+    /**
+     * Create and aggregation pipeline
+     * 
+     * @return Pobl\Bongo\AggregatePipelines
+     */
+    public static function aggregate()
+    {
+        $instance = static::newInstance();
+        return $instance->collection()->createPipeline();
+    }
 
     /**
      * Parses a BSON document array into model attributes.

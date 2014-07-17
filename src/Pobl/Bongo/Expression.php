@@ -4,7 +4,7 @@ namespace Pobl\Bongo;
 
 class Expression
 {    
-    protected $_expression = array();
+    protected $expression = array();
     
     /**
      * Create new instance of expression
@@ -17,11 +17,11 @@ class Expression
     
     public function where($field, $value)
     {
-        if(!isset($this->_expression[$field]) || !is_array($value) || !is_array($this->_expression[$field])) {
-            $this->_expression[$field] = $value;
+        if(!isset($this->expression[$field]) || !is_array($value) || !is_array($this->expression[$field])) {
+            $this->expression[$field] = $value;
         }
         else {
-            $this->_expression[$field] = array_merge_recursive($this->_expression[$field], $value);
+            $this->expression[$field] = array_merge_recursive($this->expression[$field], $value);
         }
         
         return $this;
@@ -258,12 +258,12 @@ class Expression
     
     public function toArray()
     {
-        return $this->_expression;
+        return $this->expression;
     }
     
     public function merge(Expression $expression)
     {
-        $this->_expression = array_merge_recursive($this->_expression, $expression->toArray());
+        $this->expression = array_merge_recursive($this->expression, $expression->toArray());
         return $this;
     }
 }
