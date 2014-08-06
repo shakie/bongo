@@ -194,7 +194,7 @@ class Model
      *
      * @param  mixed  $id
      * @param  array  $fields
-     * @return Pobl\Bongo\Model
+     * @return \Pobl\Bongo\Model
      */
     public static function first($id = array(), $fields = array())
     {
@@ -264,7 +264,7 @@ class Model
      * @param  array  $query
      * @param  array  $fields
      * @param  boolean  $cachable
-     * @return Pobl\Bongo\OdmCursor
+     * @return \Pobl\Bongo\OdmCursor
      */
     public static function where($where = array(), $fields = array(), $cachable = false)
     {
@@ -311,7 +311,7 @@ class Model
      * Find "all" documents from the collection
      *
      * @param  array  $fields
-     * @return Pobl\Bongo\OdmCursor
+     * @return \Pobl\Bongo\OdmCursor
      */
     public static function all($fields = array())
     {
@@ -321,7 +321,7 @@ class Model
     /**
      * Create and aggregation pipeline
      * 
-     * @return Pobl\Bongo\AggregatePipelines
+     * @return \Pobl\Bongo\AggregatePipelines
      */
     public static function aggregate()
     {
