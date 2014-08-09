@@ -12,13 +12,19 @@ class Collection implements \Countable
      *
      * @var string
      */
-    protected $queryClass = '\Pobl\Bongo\Query';
+    protected $queryClass = '\\Pobl\\Bongo\\Query';
 
     /**
      *
      * @var string
      */
-    protected $queryExpressionClass = '\Pobl\Bongo\Expression';
+    protected $queryExpressionClass = '\\Pobl\\Bongo\\Expression';
+    
+    /**
+     *
+     * @var string
+     */
+    protected $modelClass = '\\Pobl\\Bongo\\Model';
 
     /**
      *
@@ -32,18 +38,6 @@ class Collection implements \Countable
      */
     private $mongoCollection;
 
-    /**
-     *
-     * @var array
-     */
-    private $documentsPool = array();
-
-    /**
-     *
-     * @var boolean
-     */
-    protected $documentPoolEnabled = false;
-
     public function __construct(Database $database, $collection)
     {
         $this->database = $database;
@@ -53,11 +47,6 @@ class Collection implements \Countable
         } else {
             $this->mongoCollection = $database->getMongoDB()->selectCollection($collection);
         }
-    }
-
-    public function __get($name)
-    {
-        return $this->getDocument($name);
     }
 
     /**
@@ -109,12 +98,12 @@ class Collection implements \Countable
      */
     public function getModelClassName(array $documentData = null)
     {
-        return '\Pobl\Bongo\Model';
+        return $this->modelClass;
     }
 
     public function count()
     {
-        return $this->getQuery()->count();
+        return $this->mongoCollection->count();
     }
 
     /**
@@ -153,115 +142,19 @@ class Collection implements \Countable
     {
         return new $this->queryExpressionClass();
     }
-
-    public function disableDocumentPool()
-    {
-        $this->documentPoolEnabled = false;
-        return $this;
-    }
-
-    public function enableDocumentPool()
-    {
-        $this->documentPoolEnabled = true;
-        return $this;
-    }
-
+    
     /**
-     * Get document by id
      * 
-     * @param string|MongoId $id
-     * @return \Pobl\Bongo\Document|null
+     * @return \Pobl\Bongo\Model
      */
-    public function getDocument($id)
+    public function createModel()
     {
-        if (!$this->documentPoolEnabled) {
-            return $this->getDocumentDirectly($id);
-        }
-
-        if (!isset($this->documentsPool[(string) $id])) {
-            $this->documentsPool[(string) $id] = $this->getDocumentDirectly($id);
-        }
-
-        return $this->documentsPool[(string) $id];
-    }
-
-    /**
-     * Get document by id directly omiting cache
-     * 
-     * @param type $id
-     * @return \Pobl\Bongo\Document|null
-     */
-    public function getDocumentDirectly($id)
-    {
-        return $this->getQuery()->byId($id)->findOne();
-    }
-
-    /**
-     * Get document by id
-     * 
-     * @param string|MongoId $id
-     * @return \Pobl\Bongo\Document|null
-     */
-    public function getDocuments(array $idList)
-    {
-        $documents = $this->getQuery()->byIdList($idList)->findAll();
-        if (!$documents) {
-            return array();
-        }
-
-        if ($this->documentPoolEnabled) {
-            $this->documentsPool = array_merge(
-                    $this->documentsPool, $documents
-            );
-        }
-
-        return $documents;
-    }
-
-    public function deleteDocument(Document $document)
-    {
-        $document->triggerEvent('beforeDelete');
-
-        $status = $this->mongoCollection->remove(array(
-            '_id' => $document->getId()
-        ));
-
-        $document->triggerEvent('afterDelete');
-
-        if ($status['ok'] != 1) {
-            throw new \Exception('Delete error: ' . $status['err']);
-        }
-
-        // drop from document's pool
-        unset($this->documentsPool[(string) $document->getId()]);
-
-        return $this;
-    }
-
-    public function deleteDocuments(Expression $expression)
-    {
-        $result = $this->mongoCollection->remove($expression->toArray());
-        if (!$result) {
-            throw new \Exception('Error removing documents from collection');
-        }
-
-        return $this;
+        $modelClassName = $this->getModelClassName();
+        return new $modelClassName();
     }
 
     public function insertMultiple($rows)
     {
-        $document = $this->createDocument();
-
-        foreach ($rows as $row) {
-            $document->fromArray($row);
-
-            if (!$document->isValid()) {
-                throw new \Exception('Document invalid');
-            }
-
-            $document->reset();
-        }
-
         $result = $this->mongoCollection->batchInsert($rows);
         if (!$result || $result['ok'] != 1) {
             throw new \Exception('Batch insert error: ' . $result['err']);

@@ -4,7 +4,7 @@ namespace Pobl\Bongo;
 
 use OdmCursor;
 
-class Query implements \Iterator, \Countable
+class Query
 {
     /**
      *
@@ -201,8 +201,8 @@ class Query implements \Iterator, \Countable
                 return $element;
             }
             
-            if($element instanceof Document) {
-                return $element->getId();
+            if($element instanceof Model) {
+                return $element->getMongoId();
             }
             
             return new \MongoId($element);
@@ -303,26 +303,9 @@ class Query implements \Iterator, \Countable
         return $this->cursor;
     }
     
-    /**
-     * Count documents in result without applying limit and offset
-     * @return int count
-     */
-    public function count()
+    public function getModelClassName()
     {
-        return (int) $this->collection
-            ->getMongoCollection()
-            ->count($this->expression->toArray());
-    }
-    
-    /**
-     * Count documents in result with applying limit and offset
-     * @return int count
-     */
-    public function limitedCount()
-    {
-        return (int) $this->collection
-            ->getMongoCollection()
-            ->count($this->expression->toArray(), $this->limit, $this->skip);
+        return $this->modelClass;
     }
     
     public function findAndRemove()
@@ -341,12 +324,15 @@ class Query implements \Iterator, \Countable
             return null;
         }
         
-        $documentClassName = $this->collection
-            ->getModelClassName($mongoDocument);
-        
-        return new $documentClassName($this->collection, $mongoDocument, array(
-            'stored' => true
-        ));
+        $modelClassName = $this->getModelClassName();
+        /* @var $model \Pobl\Bongo\Model */
+        $model = new $modelClassName();
+
+        if ($model->parseDocument($mongoDocument)) {
+            return $model->polymorph($model);
+        } else {
+            return null;
+        }
     }
     
     public function findAndUpdate(Operator $operator, $upsert = false)
@@ -366,12 +352,15 @@ class Query implements \Iterator, \Countable
             return null;
         }
         
-        $documentClassName = $this->collection
-            ->getModelClassName($mongoDocument);
-        
-        return new $documentClassName($this->collection, $mongoDocument, array(
-            'stored' => true
-        ));
+        $modelClassName = $this->getModelClassName();
+        /* @var $model \Pobl\Bongo\Model */
+        $model = new $modelClassName();
+
+        if ($model->parseDocument($mongoDocument)) {
+            return $model->polymorph($model);
+        } else {
+            return null;
+        }
     }
     
     public function filter($handler)
@@ -387,24 +376,6 @@ class Query implements \Iterator, \Countable
         }
         
         return $result;
-    }
-    
-    public function findRandom()
-    {
-        $count = $this->count();
-        
-        if(!$count) {
-            return null;
-        }
-        
-        if(1 === $count) {
-            return $this->findOne();
-        }
-        
-        return $this
-            ->skip(mt_rand(0, $count - 1))
-            ->limit(1)
-            ->current();
     }
     
     /**
@@ -426,33 +397,6 @@ class Query implements \Iterator, \Countable
     public function toArray()
     {
         return $this->expression->toArray();
-    }
-    
-    public function current()
-    {
-        return $this->getCursor()->current();
-    }
-    
-    public function key()
-    {
-        return $this->getCursor()->key();
-    }
-    
-    public function next()
-    {
-        $this->getCursor()->next();
-        return $this;
-    }
-    
-    public function rewind()
-    {
-        $this->getCursor()->rewind();
-        return $this;
-    }
-    
-    public function valid()
-    {
-        return $this->getCursor()->valid();
     }
     
     public function readPrimaryOnly()

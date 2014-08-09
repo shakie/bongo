@@ -73,45 +73,13 @@ class Database
     }
 
     /**
-     * Map collection name to class
-     * 
-     * @param string|array $name collection name or array like [collectionName => collectionClass, ...]
-     * @param string|null $class if $name is string, then full class name, else ommited
-     * @return \Pobl\Bongo\Client
-     */
-    public function map($name, $class = null)
-    {
-
-        // map collections to classes
-        if (is_array($name)) {
-            $this->mapping = array_merge($this->mapping, $name);
-        }
-        // map collection to class
-        elseif ($class) {
-            $this->mapping[$name] = $class;
-        }
-        // define class prefix
-        else {
-            $this->classPrefix = rtrim($name, '\\');
-        }
-
-        return $this;
-    }
-
-    /**
      * Get class name mapped to collection
      * @param string $name name of collection
      * @return string name of class
      */
     public function getCollectionClassName($name)
     {
-        if (isset($this->mapping[$name])) {
-            $className = $this->mapping[$name];
-        } elseif ($this->classPrefix) {
-            $className = $this->classPrefix . '\\' . implode('\\', array_map('ucfirst', explode('.', strtolower($name))));
-        } else {
-            $className = '\Pobl\Bongo\Collection';
-        }
+        $className = '\\Pobl\\Bongo\\Collection';
 
         return $className;
     }
@@ -173,16 +141,6 @@ class Database
         }
 
         return $this->collectionPool[$name];
-    }
-
-    /**
-     * 
-     * @param string $channel name of channel
-     * @return \Pobl\Bongo\Queue
-     */
-    public function getQueue($channel)
-    {
-        return new Queue($this, $channel);
     }
 
     public function readPrimaryOnly()

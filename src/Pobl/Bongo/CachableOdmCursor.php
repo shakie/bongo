@@ -73,7 +73,7 @@ class CachableOdmCursor implements \Iterator
     /**
      * Returns the MongoCursor object
      *
-     * @return MongoCursor
+     * @return \MongoCursor
      */
     public function getCursor()
     {

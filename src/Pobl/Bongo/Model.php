@@ -129,7 +129,7 @@ class Model
         $preparedAttr = $this->prepareMongoAttributes($this->attributes);
 
         // Saves the model using the MongoClient
-        $result = $this->collection()
+        $result = $this->getCollection()
                 ->save($preparedAttr, array("w" => $this->writeConcern));
 
         if (isset($result['ok']) && $result['ok']) {
@@ -173,7 +173,7 @@ class Model
 
         $preparedAttr = $this->prepareMongoAttributes($this->attributes);
 
-        $result = $this->collection()
+        $result = $this->getCollection()
                 ->remove($preparedAttr);
 
         if (isset($result['ok']) && $result['ok']) {
@@ -213,7 +213,7 @@ class Model
         }
 
         // Perfodm Mongo's findOne
-        $document = $instance->collection()->findOne($query, $fields);
+        $document = $instance->getCollection()->findOne($query, $fields);
 
         // If the response is correctly parsed return it
         if ($instance->parseDocument($document)) {
@@ -255,7 +255,7 @@ class Model
         if (!$instance->collection) {
             return false;
         }
-        return $instance->collection()->getQuery(get_class($instance));
+        return $instance->getCollection()->getQuery(get_class($instance));
     }
 
     /**
@@ -300,7 +300,7 @@ class Model
             // Get the cursor from the query
             $cursor = new CachableOdmCursor($query->getExpression(), get_class($instance));
         } else {
-            // Get the cursor from the query
+            // Get the cursor from the cursor
             $cursor = new OdmCursor($query->getCursor(), get_class($instance));
         }
 
@@ -326,7 +326,7 @@ class Model
     public static function aggregate()
     {
         $instance = static::newInstance();
-        return $instance->collection()->createPipeline();
+        return $instance->getCollection()->createPipeline();
     }
 
     /**
@@ -425,7 +425,7 @@ class Model
      *
      * @return MongoDB
      */
-    protected function db()
+    public function getDatabase()
     {
         if (!static::$connection) {
             //Create a connection with default values
@@ -446,13 +446,24 @@ class Model
     }
 
     /**
-     * Returns the Mongo collection object
+     * Returns the Bongo collection object
      *
      * @return \Pobl\Bongo\Collection
      */
-    protected function collection()
+    public function getCollection()
     {
-        return $this->db()->{$this->collection};
+        return $this->getDatabase()->{$this->collection};
+    }
+
+    /**
+     * Returns the Bongo collection object
+     * 
+     * @return \Pobl\Bongo\Collection
+     */
+    public static function collection()
+    {
+        $instance = static::newInstance();
+        return $instance->getCollection();
     }
 
     /**
@@ -462,7 +473,7 @@ class Model
      */
     public function getMongoCollection()
     {
-        return $this->collection()->getMongoCollection();
+        return $this->getCollection()->getMongoCollection();
     }
 
     /**
@@ -549,9 +560,31 @@ class Model
             }
         }
     }
+    
+    /**
+     * Batch insert documents
+     * 
+     * @param array $data
+     */
+    public static function batchInsert($data)
+    {
+        $collection = static::collection();
+        $collection->insertMultiple($data);
+    }
+    
+    /**
+     * 
+     * @param \Pobl\Bongo\Expression $expression
+     * @param array|Operator $data
+     */
+    public static function batchUpdate(Expression $expression, $data)
+    {
+        $collection = static::collection();
+        $collection->updateMultiple($expression, $data);
+    }
 
     /**
-     * Set a given attribute on the model.
+     * Clean a given attribute on the model.
      *
      * @param  string  $key
      * @param  mixed   $value
@@ -560,6 +593,17 @@ class Model
     public function cleanAttribute($key)
     {
         unset($this->attributes[$key]);
+    }
+    
+    /**
+     * Clean all attributes of a model
+     * 
+     */
+    public function cleanAttributes()
+    {
+        foreach ($this->attributes as $attribute) {
+            $this->cleanAttribute($attribute);
+        }
     }
 
     /**
@@ -1012,7 +1056,7 @@ class Model
         $diffAttributes = $this->changedAttributes($preparedAttr);
 
         // Saves the model using the MongoClient
-        $result = $this->collection()
+        $result = $this->getCollection()
                 ->update(array('_id' => $preparedAttr['_id']), $diffAttributes, array("w" => $this->writeConcern));
 
         if (isset($result['ok']) && $result['ok']) {

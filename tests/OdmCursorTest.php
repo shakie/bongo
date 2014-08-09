@@ -161,13 +161,11 @@ class OdmCursorTest extends \PHPUnit_Framework_TestCase
         $result = $odmCursor->toJson();
 
         $shouldBe =
-        '['.
+        '[{"name":"bob","occupation":"coder"}'.
         '{"name":"bob","occupation":"coder"}'.
         '{"name":"bob","occupation":"coder"}'.
         '{"name":"bob","occupation":"coder"}'.
-        '{"name":"bob","occupation":"coder"}'.
-        '{"name":"bob","occupation":"coder"}'.
-        ']'; 
+        '{"name":"bob","occupation":"coder"}]'; 
 
         $this->assertEquals($shouldBe, $result);
     }
