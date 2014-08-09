@@ -28,10 +28,10 @@ class Paginator implements \Iterator
      */
     private $query;
     
-    public function __construct(Query $queryBuilder = null)
+    public function __construct(Query $query = null)
     {
-        if($queryBuilder) {
-            $this->setQueryBuilder($queryBuilder);
+        if($query) {
+            $this->setQuery($query);
         }
     }
     
@@ -90,9 +90,9 @@ class Paginator implements \Iterator
         return $currentPage;
     }
     
-    public function setQueryBuilder(QueryBuilder $queryBuilder)
+    public function setQuery(Query $query)
     {
-        $this->query = clone $queryBuilder;
+        $this->query = clone $query;
         $this->applyLimits();
         
         return $this;

@@ -10,7 +10,7 @@ class OdmCursor implements \Iterator
      *
      * @var string
      */
-    protected $model;
+    protected $modelClass;
 
     /**
      * The MongoCursor used to interact with db
@@ -34,10 +34,10 @@ class OdmCursor implements \Iterator
      * @param $model string
      * @return void
      */
-    public function __construct($cursor, $model)
+    public function __construct($cursor, $modelClass)
     {
         $this->cursor = $cursor;
-        $this->model = $model;
+        $this->modelClass = $modelClass;
         $this->position = 0;
     }
 
@@ -96,12 +96,11 @@ class OdmCursor implements \Iterator
      */
     function current()
     {
-        $model = new $this->model();
+        $model = new $this->modelClass();
         $document = $this->cursor->current();
 
         if ($model->parseDocument($document)) {
-            $model = $model->polymorph($model);
-            return $model;
+            return $model->polymorph($model);
         } else {
             return false;
         }
