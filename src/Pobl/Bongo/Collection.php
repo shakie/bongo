@@ -2,8 +2,8 @@
 
 namespace Pobl\Bongo;
 
-use Query;
-use Expression;
+use \Pobl\Bongo\Query;
+use \Pobl\Bongo\Expression;
 
 class Collection implements \Countable
 {
@@ -19,7 +19,7 @@ class Collection implements \Countable
      * @var string
      */
     protected $queryExpressionClass = '\\Pobl\\Bongo\\Expression';
-    
+
     /**
      *
      * @var string
@@ -59,7 +59,7 @@ class Collection implements \Countable
     }
 
     /**
-     * 
+     *
      * @return MongoCollection
      */
     public function getMongoCollection()
@@ -68,7 +68,7 @@ class Collection implements \Countable
     }
 
     /**
-     * 
+     *
      * @return \Pobl\Bongo\Database
      */
     public function getDatabase()
@@ -92,7 +92,7 @@ class Collection implements \Countable
 
     /**
      * Override to define classname of document by document data
-     * 
+     *
      * @param array $documentData
      * @return string Document class data
      */
@@ -108,7 +108,7 @@ class Collection implements \Countable
 
     /**
      * Create document query
-     * 
+     *
      * @return \Pobl\Bongo\Query|\Pobl\Bongo\Expression
      */
     public function getQuery($class)
@@ -120,7 +120,7 @@ class Collection implements \Countable
 
     /**
      * Retrieve a list of distinct values for the given key across a collection.
-     * 
+     *
      * @param string $selector field selector
      * @param \Pobl\Bongo\Expression $expression expression to search documents
      * @return array distinct values
@@ -135,16 +135,16 @@ class Collection implements \Countable
     }
 
     /**
-     * 
+     *
      * @return \Pobl\Bongo\Expression
      */
     public function expression()
     {
         return new $this->queryExpressionClass();
     }
-    
+
     /**
-     * 
+     *
      * @return \Pobl\Bongo\Model
      */
     public function createModel()
@@ -184,7 +184,7 @@ class Collection implements \Countable
 
     /**
      * Save data to Mongo
-     * 
+     *
      * @param array $data
      * @param type $options
      * @return array
@@ -196,7 +196,7 @@ class Collection implements \Countable
 
     /**
      * Create Aggregator pipelines instance
-     * 
+     *
      * @return \Pobl\Bongo\AggregatePipelines
      */
     public function createPipeline()
@@ -206,7 +206,7 @@ class Collection implements \Countable
 
     /**
      * Aggregate using pipelines
-     * 
+     *
      * @param type $pipelines
      * @return array result of aggregation
      * @throws \Exception

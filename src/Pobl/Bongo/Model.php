@@ -3,7 +3,7 @@
 namespace Pobl\Bongo;
 
 use \MongoDate;
-use Query;
+use \Pobl\Bongo\Query;
 
 class Model
 {
@@ -246,7 +246,7 @@ class Model
     }
 
     /**
-     * 
+     *
      * @return \Pobl\Bongo\Query|boolean
      */
     public static function query()
@@ -317,10 +317,10 @@ class Model
     {
         return static::where(array(), $fields);
     }
-    
+
     /**
      * Create and aggregation pipeline
-     * 
+     *
      * @return \Pobl\Bongo\AggregatePipelines
      */
     public static function aggregate()
@@ -457,7 +457,7 @@ class Model
 
     /**
      * Returns the Bongo collection object
-     * 
+     *
      * @return \Pobl\Bongo\Collection
      */
     public static function collection()
@@ -477,7 +477,7 @@ class Model
     }
 
     /**
-     * 
+     *
      * @param \Pobl\Bongo\Client $client
      */
     public static function setDefaultConnection($client)
@@ -560,10 +560,10 @@ class Model
             }
         }
     }
-    
+
     /**
      * Batch insert documents
-     * 
+     *
      * @param array $data
      */
     public static function batchInsert($data)
@@ -571,9 +571,9 @@ class Model
         $collection = static::collection();
         $collection->insertMultiple($data);
     }
-    
+
     /**
-     * 
+     *
      * @param \Pobl\Bongo\Expression $expression
      * @param array|Operator $data
      */
@@ -594,10 +594,10 @@ class Model
     {
         unset($this->attributes[$key]);
     }
-    
+
     /**
      * Clean all attributes of a model
-     * 
+     *
      */
     public function cleanAttributes()
     {
