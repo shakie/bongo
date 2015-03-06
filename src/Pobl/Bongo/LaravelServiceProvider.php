@@ -24,7 +24,7 @@ class LaravelServiceProvider extends ServiceProvider
         );
 
         $this->app->booted(function() {
-            $config = $this->app['config']['bongo'];
+            $config = $this->app['config']['bongo']['connections'][$this->app['config']['bongo']['default']];
             $dsn = 'mongodb://' . ($config['username'] !== '' ? ($config['username']
                     . ':' . $config['password']) . '@' : '')
                     . $config['host'] . ':'
