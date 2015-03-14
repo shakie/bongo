@@ -12,7 +12,7 @@ class LaravelServiceProvider extends ServiceProvider
     {
         //Publish the config
         $this->publishes([
-            __DIR__ . '/config/laravel.php' => config_path('bongo.php')
+            __DIR__ . '/config/laravel.php' => config_path('mongo.php')
         ]);
     }
 
@@ -20,11 +20,11 @@ class LaravelServiceProvider extends ServiceProvider
     {
         //Merge config with default values
         $this->mergeConfigFrom(
-            __DIR__ . '/config/laravel.php', 'bongo'
+            __DIR__ . '/config/laravel.php', 'mongo'
         );
 
         $this->app->booted(function() {
-            $config = $this->app['config']['bongo']['connections'][$this->app['config']['bongo']['default']];
+            $config = $this->app['config']['mongo']['connections'][$this->app['config']['mongo']['default']];
             $dsn = 'mongodb://' . ($config['username'] !== '' ? ($config['username']
                     . ':' . $config['password']) . '@' : '')
                     . $config['host'] . ':'

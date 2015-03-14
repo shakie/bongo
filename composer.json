@@ -1,7 +1,7 @@
 {
     "name": "poblcreative/bongo",
     "description": "Easy, powerful and ultrafast ODM and ActiveRecord for PHP and MongoDB.",
-    "keywords": ["odm","mongodb","nosql"],
+    "keywords": ["odm", "mongodb", "nosql"],
     "license": "MIT",
     "authors": [
         {

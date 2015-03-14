@@ -8,7 +8,7 @@ return [
      |
      */
 
-    'default' => env('BONGO_DEFAULT_CONNECTION', 'default'),
+    'default' => env('MONGO_DEFAULT_CONNECTION', 'default'),
 
     /*
      |
@@ -18,11 +18,11 @@ return [
 
     'connections' => [
         'default' => [
-            'host' => env('BONGO_HOST', 'localhost'),
-            'port' => env('BONGO_PORT', 27017),
-            'username' => env('BONGO_USERNAME', 'guest'),
-            'password' => env('BONGO_PASSWORD', 'guest'),
-            'database' => env('BONGO_DATABASE', 'guest')
+            'host' => env('MONGO_HOST', 'localhost'),
+            'port' => env('MONGO_PORT', 27017),
+            'username' => env('MONGO_USERNAME', 'guest'),
+            'password' => env('MONGO_PASSWORD', 'guest'),
+            'database' => env('MONGO_DATABASE', 'guest')
         ]
     ]
 ];
