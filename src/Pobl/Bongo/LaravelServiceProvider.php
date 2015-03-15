@@ -26,14 +26,7 @@ class LaravelServiceProvider extends ServiceProvider
         );
 
         $this->app->singleton('mongodb', function($app) {
-            $config = $app['config']['mongo']['connections'][$app['config']['mongo']['default']];
-            $dsn = 'mongodb://' . ($config['username'] !== '' ? ($config['username']
-                            . ':' . $config['password']) . '@' : '')
-                    . $config['host'] . ':'
-                    . $config['port'];
-            $bongo = new Client($dsn);
-            $bongo->useDatabase($config['database']);
-            return $bongo;
+            return new Laravel5Client($app);
         });
     }
 
