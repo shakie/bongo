@@ -14,24 +14,26 @@ class LaravelServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/config/laravel.php' => config_path('mongo.php')
         ]);
+
+        Model::setDefaultConnection($this->app['mongodb']);
     }
 
     public function register()
     {
         //Merge config with default values
         $this->mergeConfigFrom(
-            __DIR__ . '/config/laravel.php', 'mongo'
+                __DIR__ . '/config/laravel.php', 'mongo'
         );
 
-        $this->app->booted(function() {
-            $config = $this->app['config']['mongo']['connections'][$this->app['config']['mongo']['default']];
+        $this->app->singleton('mongodb', function($app) {
+            $config = $app['config']['mongo']['connections'][$app['config']['mongo']['default']];
             $dsn = 'mongodb://' . ($config['username'] !== '' ? ($config['username']
-                    . ':' . $config['password']) . '@' : '')
+                            . ':' . $config['password']) . '@' : '')
                     . $config['host'] . ':'
                     . $config['port'];
             $bongo = new Client($dsn);
             $bongo->useDatabase($config['database']);
-            Model::setDefaultConnection($bongo);
+            return $bongo;
         });
     }
 
